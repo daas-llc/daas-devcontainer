@@ -8,7 +8,7 @@ cp -r /etc/skel/. "${HOME}"
 cp /etc/skel/.bashrc "${HOME}/.profile"
 sed -i 's/bashrc/profile/g' "${HOME}/.profile"
 touch "/etc/profile.d/z_local_aliashes.sh"
-mkdir -p "${HOME}/.jenkins" "${HOME}/.bin" "${HOME}/agent" "${HOME}/.local/bin"
+mkdir -p "${HOME}/.jenkins" "${HOME}/.bin" "${HOME}/agent" "${HOME}/.local/bin" "/usr/share/jenkins"
 
 # Yummy yum installs
 yum install -y deltarpm
@@ -21,6 +21,7 @@ yum remove -y cmake
 python3 --version && pip --version && psql --version && gcc --version && openssl --version
 
 # CMake install
+echo "${INFO} Downloading and installing Cmake version ${CMAKE_VERSION}"
 curl -sSfL https://github.com/Kitware/CMake/releases/download/v"${CMAKE_VERSION}"/cmake-"${CMAKE_VERSION}"-linux-x86_64.sh -o cmake-linux.sh
 sh cmake-linux.sh --skip-license --prefix=/usr
 rm -f cmake-linux.sh
@@ -37,3 +38,11 @@ go get -v github.com/aws/aws-sdk-go-v2/config
 go clean -cache
 go clean -modcache
 go version
+
+# Saml2aws install
+echo "${INFO} Downloading and installing saml2aws ${SAML2AWS_VERSION}"
+curl -sfL https://github.com/Versent/saml2aws/releases/download/v${SAML2AWS_VERSION}/saml2aws_${SAML2AWS_VERSION}_linux_amd64.tar.gz | tar -xzv -C ~/.bin saml2aws
+chmod u+x ~/.bin/saml2aws
+echo 'source <(saml2aws --completion-script-bash)' >> "${HOME}/.bashrc"
+saml2aws --version
+
