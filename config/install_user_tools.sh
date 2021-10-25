@@ -24,7 +24,8 @@ echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> "${HOME}/.profile"
 nvm install ${NPM_VERSION}
 npm install --global yarn
 npm --version
+node --version
 
 # Permissions finalization
-chown "${USER}":"${GROUP}" -R "${HOME}"
-chmod 777 -R "${HOME}"
+sudo chown "${USER}":"${GROUP}" -R "${HOME}"
+sudo chmod 777 -R "${HOME}"
