@@ -46,3 +46,39 @@ chmod u+x ~/.bin/saml2aws
 echo 'source <(saml2aws --completion-script-bash)' >> "${HOME}/.bashrc"
 saml2aws --version
 
+# ECS CLI Install
+echo "${INFO} Downloading and installing latest amazon ecs cli"
+curl -sfL https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest -O "${HOME}/.bin"
+
+# Please build install
+echo "${INFO} Downloading and installing Please Build version ${PLZ_BUILD_VERSION}"
+curl -skL https://get.please.build > please.sh
+sh ./please.sh "${PLZ_BUILD_VERSION}"
+echo 'source <(plz --completion_script)' >> "${HOME}/.bashrc"
+rm -f please.sh
+plz --version
+
+# Tfswitch install
+echo "${INFO} Downloading and installing latest version of tfswitch"
+curl -sSfL https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | bash
+chmod 777 /usr/local/bin
+
+# Tgswitch install
+echo "${INFO} Downloading and installing latest version of tgswitch"
+curl -sSfL https://raw.githubusercontent.com/warrensbox/tgswitch/release/install.sh | bash
+chmod 777 /usr/local/bin
+
+# Tflint install
+echo "${INFO} Downloading and installing latest version of tflint"
+curl -sSfL https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+chmod 777 /usr/local/bin
+
+# AWS CLI install
+
+# AWS Serverless Application Model CLI install
+
+# Action hero install
+
+# Permissions finalization
+chown "${USER}":"${GROUP}" -R "${HOME}"
+chmod 777 -R "${HOME}" "/tmp" "/etc/profile.d" "/var/lang"

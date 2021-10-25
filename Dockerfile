@@ -35,6 +35,7 @@ ENV INFO="[INFO]"
 ENV ERROR="[ERROR]"
 ENV WARN="[WARN]"
 ENV AWS_CLI_AUTO_PROMPT="on-partial"
+COPY config/.saml2aws ${HOME}
 
 # Base setup
 COPY config/base_setup.sh base_setup.sh
