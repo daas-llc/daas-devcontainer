@@ -1,6 +1,5 @@
-FROM amazonlinux:2
 FROM maven:3.8.3-amazoncorretto-11 as maven
-FROM jenkins/agent:latest-jdk11 as agent
+FROM amazonlinux:2
 
 WORKDIR /tmp
 
@@ -22,11 +21,10 @@ ARG TERRAGRUNT_VERSION="0.34.1"
 ARG CONFTEST_VERSION="0.28.1"
 ARG CORRETO_JDK_VERSION="11"
 ARG CMAKE_VERSION="3.21.3"
-ARG PYTHON_VERSION="3.9.7"
 ARG GOLANG_VERSION="1.17"
 
+# Environment Variables
 ENV HOME="/home/${USER}"
-
 ENV JAVA_HOME="/usr/lib/jvm/java-${CORRETO_JDK_VERSION}-amazon-corretto"
 ENV GO_PATH="${HOME}/go"
 ENV PATH="${HOME}/.local/bin:${HOME}/go/bin:${HOME}/.bin:${HOME}/.please:${PATH}"
@@ -35,6 +33,8 @@ ENV INFO="[INFO]"
 ENV ERROR="[ERROR]"
 ENV WARN="[WARN]"
 ENV AWS_CLI_AUTO_PROMPT="on-partial"
+ENV MAVEN_HOME="/${HOME}/.bin/maven"
+ENV MAVEN_CONFIG="${HOME}/.m2"
 COPY config/.saml2aws ${HOME}
 
 # Base setup
@@ -44,9 +44,10 @@ RUN chmod +x base_setup.sh; \
     rm -f base_setup.sh
 
 # Maven setup
-ENV MAVEN_HOME="/${HOME}/.bin/maven"
-ENV MAVEN_CONFIG="${HOME}/.m2"
+RUN mkdir "${MAVEN_CONFIG}"
 COPY --from=maven /usr/share/maven ${MAVEN_HOME}
+RUN ln -sfv "${HOME}/.bin/maven/bin/mvn" "${HOME}/.bin/mvn"
+RUN mvn --version
 
 # User tools setup
 USER ${USER}

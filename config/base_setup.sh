@@ -7,7 +7,7 @@ useradd -c "Jenkins user" -d "${HOME}" -u "${UID}" -g "${GID}" -m "${USER}"
 cp -r /etc/skel/. "${HOME}"
 cp /etc/skel/.bashrc "${HOME}/.profile"
 sed -i 's/bashrc/profile/g' "${HOME}/.profile"
-touch "/etc/profile.d/z_local_aliashes.sh"
+touch "/etc/profile.d/z_local_aliases.sh"
 mkdir -p "${HOME}/.jenkins" "${HOME}/.bin" "${HOME}/agent" "${HOME}/.local/bin" "/usr/share/jenkins"
 
 # Yummy yum installs
@@ -74,10 +74,29 @@ curl -sSfL https://raw.githubusercontent.com/terraform-linters/tflint/master/ins
 chmod 777 /usr/local/bin
 
 # AWS CLI install
+echo "${INFO} Downloading and installing latest version of AWS CLI V2"
+curl -sSfL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip
+unzip -q awscliv2.zip
+./aws/install
+echo "alias aws='/usr/local/bin/aws'" >> etc/profile.d/z_local_aliases.sh
+echo "alias aws='/var/lang/bin/aws'" >> etc/profile.d/z_local_aliases.sh
+rm -rf ./aws
+rm -f ./awscliv2.zip
 
 # AWS Serverless Application Model CLI install
+echo "${INFO} Downloading and installing latest version of AWS Serverless Application Model CLI"
+curl -sSfL https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip -o awssamcli.zip
+unzip -q awssamcli.zip
+./sam-installation/install
+echo "alias sam='/usr/local/bin/sam'" >> etc/profile.d/z_local_aliases.sh
+echo "alias sam='/var/lang/bin/sam'" >> etc/profile.d/z_local_aliases.sh
+rm -rf ./sam-installation
+rm -f ./awssamcli.zip
 
 # Action hero install
+echo "${INFO} Downloading and installing Actionhero version ${ACTION_HERO_VERSION}"
+curl -sSfL "https://github.com/princespaghetti/actionhero/releases/download/v${ACTION_HERO_VERSION}/actionhero_${ACTION_HERO_VERSION}_Linux_x86_64.tar.gz" | tar -zx -C "${HOME}/.bin" actionhero
+chmod +x "${HOME}/.bin/actionhero"
 
 # Permissions finalization
 chown "${USER}":"${GROUP}" -R "${HOME}"
