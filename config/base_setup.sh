@@ -8,7 +8,6 @@ useradd -c "Jenkins user" -d "${HOME}" -u "${UID}" -g "${GID}" -m "${USER}"
 cp -r /etc/skel/. "${HOME}"
 cp /etc/skel/.bashrc "${HOME}/.profile"
 sed -i 's/bashrc/profile/g' "${HOME}/.profile"
-touch /etc/profile.d/z_local_aliases.sh
 mkdir -p "${HOME}/.jenkins" "${HOME}/.bin" "${HOME}/agent" "${HOME}/.local/bin" "/usr/share/jenkins"
 
 # Setup Jenkins user
@@ -86,8 +85,6 @@ echo "${INFO} Downloading and installing latest version of AWS CLI V2"
 curl -sSfL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip
 unzip -q awscliv2.zip
 ./aws/install
-echo "alias aws='/usr/local/bin/aws'" >> etc/profile.d/z_local_aliases.sh
-echo "alias aws='/var/lang/bin/aws'" >> etc/profile.d/z_local_aliases.sh
 rm -rf ./aws
 rm -f ./awscliv2.zip
 
@@ -96,8 +93,6 @@ echo "${INFO} Downloading and installing latest version of AWS Serverless Applic
 curl -sSfL https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip -o awssamcli.zip
 unzip -q awssamcli.zip
 ./sam-installation/install
-echo "alias sam='/usr/local/bin/sam'" >> etc/profile.d/z_local_aliases.sh
-echo "alias sam='/var/lang/bin/sam'" >> etc/profile.d/z_local_aliases.sh
 rm -rf ./sam-installation
 rm -f ./awssamcli.zip
 
