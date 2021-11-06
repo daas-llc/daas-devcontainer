@@ -22,7 +22,7 @@ yum install -y deltarpm
 yum update -y --security
 yum install -y https://corretto.aws/downloads/latest/amazon-corretto-${CORRETO_JDK_VERSION}-x64-linux-jdk.rpm
 yum groupinstall -y development
-yum install -y jq vim zip unzip tar gzip gcc make openssl bzip2 python3 python-pip \
+yum install -y -q jq vim zip unzip tar gzip gcc make openssl bzip2 python3 python-pip \
                postgresql wget curl sqlite hostname bash-completion skopeo
 yum remove -y cmake shadow-utils.x86_64
 python3 --version && pip --version && psql --version && gcc --version

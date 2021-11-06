@@ -16,7 +16,7 @@ ARG ACTION_HERO_VERSION="0.6.0"
 ARG SAML2AWS_VERSION="2.32.0"
 ARG NVM_VERSION="0.39.0"
 ARG NPM_VERSION="14.18.0"
-ARG TERRAFORM_VERSION="1.0.9"
+ARG TERRAFORM_VERSION="1.0.10"
 ARG TERRAGRUNT_VERSION="0.34.1"
 ARG CONFTEST_VERSION="0.28.1"
 ARG CORRETO_JDK_VERSION="11"
@@ -46,8 +46,8 @@ RUN chmod +x base_setup.sh; \
 # Maven setup
 RUN mkdir "${MAVEN_CONFIG}"
 COPY --from=maven /usr/share/maven ${MAVEN_HOME}
-RUN ln -sfv "${HOME}/.bin/maven/bin/mvn" "${HOME}/.bin/mvn"
-RUN mvn --version
+RUN ln -sfv "${HOME}/.bin/maven/bin/mvn" "${HOME}/.bin/mvn"; \
+    mvn --version
 
 # User tools setup
 USER ${USER}

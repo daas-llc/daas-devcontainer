@@ -10,7 +10,7 @@ terraform --version
 
 # Set Terragrunt version via tgswitch
 echo "${INFO} Downloading and installing Terragurnt version ${TERRAGRUNT_VERSION} via tgswitch"
-tgswitch --skip-lookup ${TERRAGRUNT_VERSION}
+tgswitch ${TERRAGRUNT_VERSION}
 echo 'complete -C /usr/local/bin/terraform terragrunt' >> "${HOME}/.bashrc"
 terragrunt --version
 
