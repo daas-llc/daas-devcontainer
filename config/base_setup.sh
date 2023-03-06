@@ -1,31 +1,32 @@
 #!/bin/bash
 
-# Setup Jenkins user
+# Setup ${USER} 
 yum install shadow-utils.x86_64 sudo -y
-echo "${INFO} Creating Jenkins User"
+echo "${INFO} Creating user: ${USER} ..."
 groupadd ${GROUP} -g ${GID}
-useradd -c "Jenkins user" -d "${HOME}" -u "${UID}" -g "${GID}" -m "${USER}"
+useradd -c "${USER} user" -d "${HOME}" -u "${UID}" -g "${GID}" -m "${USER}"
 cp -r /etc/skel/. "${HOME}"
 cp /etc/skel/.bashrc "${HOME}/.profile"
 sed -i 's/bashrc/profile/g' "${HOME}/.profile"
-mkdir -p "${HOME}/.jenkins" "${HOME}/.bin" "${HOME}/agent" "${HOME}/.local/bin" "/usr/share/jenkins"
+mkdir -p "${HOME}/.bin" "${HOME}/.local/bin" 
 
-# Setup Jenkins user
+# Setup ${USER}
 USER_ID=$(id -u)
 GROUP_ID=$(id -g)
 if [ x"$USER_ID" != x"0" ]; then
-    echo "jenkins:!!:${USER_ID}:${GROUP_ID}:Jenkins User:${HOME}:/bin/bash" >> /etc/passwd
+    echo "${USER}:!!:${USER_ID}:${GROUP_ID}:${USER} user:${HOME}:/bin/bash" >> /etc/passwd
 fi
 
 # Yummy yum installs
-yum install -y deltarpm
-yum update -y --security
-yum install -y https://corretto.aws/downloads/latest/amazon-corretto-${CORRETO_JDK_VERSION}-x64-linux-jdk.rpm
-yum groupinstall -y development
-yum install -y -q jq vim zip unzip tar gzip gcc make openssl bzip2 python3 python-pip \
-               postgresql wget curl sqlite hostname bash-completion skopeo
-yum remove -y cmake shadow-utils.x86_64
-python3 --version && pip --version && psql --version && gcc --version
+sudo yum install -y deltarpm
+sudo yum update -y --security
+sudo yum install -y https://corretto.aws/downloads/latest/amazon-corretto-${CORRETO_JDK_VERSION}-x64-linux-jdk.rpm
+sudo yum groupinstall -y development
+sudo yum install -y jq vim zip unzip tar gzip gcc make openssl bzip2 python3 \
+                    wget curl hostname bash-completion
+python3 -m pip install --upgrade --force pip
+python3 --version && pip --version
+echo "alias python=python3" >> ${HOME}/.bashrc
 
 # CMake install
 echo "${INFO} Downloading and installing Cmake version ${CMAKE_VERSION}"
@@ -33,6 +34,11 @@ curl -sSfL https://github.com/Kitware/CMake/releases/download/v"${CMAKE_VERSION}
 sh cmake-linux.sh --skip-license --prefix=/usr
 rm -f cmake-linux.sh
 cmake --version
+
+# Maven install
+sudo wget https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+sudo yum install -y apache-maven
 
 # Golang install
 echo "${INFO} Downloading and installing Golang version ${GOLANG_VERSION}"
@@ -50,18 +56,16 @@ go version
 echo "${INFO} Downloading and installing saml2aws ${SAML2AWS_VERSION}"
 curl -sfL https://github.com/Versent/saml2aws/releases/download/v${SAML2AWS_VERSION}/saml2aws_${SAML2AWS_VERSION}_linux_amd64.tar.gz | tar -xzv -C ~/.bin saml2aws
 sudo chmod u+x ~/.bin/saml2aws
-echo 'source <(saml2aws --completion-script-bash)' >> "${HOME}/.bashrc"
 saml2aws --version
 
-# ECS CLI Install
-echo "${INFO} Downloading and installing latest amazon ecs cli"
-curl -sfL https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest -O "${HOME}/.bin"
+# AWS Copilot CLI Install
+echo "${INFO} Downloading and installing AWS Copilot CLI"
+curl -Lo copilot https://github.com/aws/copilot-cli/releases/latest/download/copilot-linux && chmod +x copilot && sudo mv copilot /usr/local/bin/copilot && copilot --help
 
 # Please build install
 echo "${INFO} Downloading and installing Please Build version ${PLZ_BUILD_VERSION}"
 curl -skL https://get.please.build > please.sh
 sh ./please.sh "${PLZ_BUILD_VERSION}"
-echo 'source <(plz --completion_script)' >> "${HOME}/.bashrc"
 rm -f please.sh
 plz --version
 
@@ -88,19 +92,15 @@ unzip -q awscliv2.zip
 rm -rf ./aws
 rm -f ./awscliv2.zip
 
-# AWS Serverless Application Model CLI install
-echo "${INFO} Downloading and installing latest version of AWS Serverless Application Model CLI"
-curl -sSfL https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip -o awssamcli.zip
-unzip -q awssamcli.zip
-./sam-installation/install
-rm -rf ./sam-installation
-rm -f ./awssamcli.zip
-
-# Action hero install
-echo "${INFO} Downloading and installing Actionhero version ${ACTION_HERO_VERSION}"
-curl -sSfL "https://github.com/princespaghetti/actionhero/releases/download/v${ACTION_HERO_VERSION}/actionhero_${ACTION_HERO_VERSION}_Linux_x86_64.tar.gz" | tar -zx -C "${HOME}/.bin" actionhero
-sudo chmod +x "${HOME}/.bin/actionhero"
+# Install NodeJS via Node Version Manager
+echo "${INFO} Downloading and installing NodeJS via NVM"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh | bash
+source ~/.bashrc
+nvm install ${NPM_VERSION}
+npm install --global yarn
+npm --version
+node --version
 
 # Permissions finalization
 sudo chown "${USER}":"${GROUP}" -R "${HOME}"
-sudo chmod 777 -R "${HOME}" "/tmp" "/etc/profile.d" "/var/lang"
+sudo chmod 777 -R "${HOME}" 
