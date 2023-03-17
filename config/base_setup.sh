@@ -18,15 +18,23 @@ if [ x"$USER_ID" != x"0" ]; then
 fi
 
 # Yummy yum installs
-sudo yum install -y deltarpm
 sudo yum update -y --security
 sudo yum install -y https://corretto.aws/downloads/latest/amazon-corretto-${CORRETO_JDK_VERSION}-x64-linux-jdk.rpm
 sudo yum groupinstall -y development
-sudo yum install -y jq vim zip unzip tar gzip gcc make openssl bzip2 python3 \
-                    wget curl hostname bash-completion
-python3 -m pip install --upgrade --force pip
-python3 --version && pip --version
-echo "alias python=python3" >> ${HOME}/.bashrc
+sudo yum install -y jq wget vim bash-completion openssl hostname
+sudo yum install -y openssl-devel bzip2-devel libffi-devel zlib-devel
+sudo yum clean all  
+
+# Python and pip install and alias updates
+curl https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz --output Python-${PYTHON_VERSION}.tgz
+tar -xzf Python-${PYTHON_VERSION}.tgz
+cd Python-${PYTHON_VERSION}
+./configure --enable-optimizations
+make altinstall && cd ..
+python${PYTHON_MAJOR_MINOR} -m pip install pip --upgrade
+python${PYTHON_MAJOR_MINOR} --version
+pip --version
+echo "alias python=python${PYTHON_MAJOR_MINOR}" >> ${HOME}/.bashrc && echo "alias python3=python${PYTHON_MAJOR_MINOR}" >> ${HOME}/.bashrc
 
 # CMake install
 echo "${INFO} Downloading and installing Cmake version ${CMAKE_VERSION}"
@@ -36,9 +44,12 @@ rm -f cmake-linux.sh
 cmake --version
 
 # Maven install
-sudo wget https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+sudo curl https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -o /etc/yum.repos.d/epel-apache-maven.repo
 sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
 sudo yum install -y apache-maven
+TMP_JAVA_HOME=$(readlink -f /usr/bin/java)
+echo $TMP_JAVA_HOME
+echo "JAVA_HOME=${TMP_JAVA_HOME::-9}" >> ${HOME}/.bashrc
 
 # Golang install
 echo "${INFO} Downloading and installing Golang version ${GOLANG_VERSION}"
@@ -60,7 +71,7 @@ saml2aws --version
 
 # AWS Copilot CLI Install
 echo "${INFO} Downloading and installing AWS Copilot CLI"
-curl -Lo copilot https://github.com/aws/copilot-cli/releases/latest/download/copilot-linux && chmod +x copilot && sudo mv copilot /usr/local/bin/copilot && copilot --help
+curl -Lo copilot https://github.com/aws/copilot-cli/releases/latest/download/copilot-linux && chmod +x copilot && sudo mv copilot /usr/local/bin/copilot && copilot --version
 
 # Please build install
 echo "${INFO} Downloading and installing Please Build version ${PLZ_BUILD_VERSION}"
@@ -96,7 +107,7 @@ rm -f ./awscliv2.zip
 echo "${INFO} Downloading and installing NodeJS via NVM"
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh | bash
 source ~/.bashrc
-nvm install ${NPM_VERSION}
+nvm install ${NODE_VERSION}
 npm install --global yarn
 npm --version
 node --version
