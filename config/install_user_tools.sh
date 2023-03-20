@@ -13,3 +13,4 @@ echo 'complete -C /usr/local/bin/terraform terragrunt' >> "${HOME}/.bashrc"
 terragrunt --version
 
 source ~/.bashrc
+echo "${INFO} Done with user setup!"

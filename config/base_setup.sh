@@ -21,7 +21,7 @@ fi
 sudo yum update -y --security
 sudo yum install -y https://corretto.aws/downloads/latest/amazon-corretto-${CORRETO_JDK_VERSION}-x64-linux-jdk.rpm
 sudo yum groupinstall -y development
-sudo yum install -y jq wget vim bash-completion openssl hostname
+sudo yum install -y jq wget vim bash-completion openssl hostname bind-utils uuid
 sudo yum install -y openssl-devel bzip2-devel libffi-devel zlib-devel
 sudo yum clean all  
 

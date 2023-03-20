@@ -1,5 +1,5 @@
 {
-    "name": "daasllcDevContainer"
+    "name": "devContainer",
     "build": { "dockerfile": "../Dockerfile" },
     "mounts": [{ "source": "daas-devcontainer", "target": "/home/daasdev", "type": "volume" }]
 }
