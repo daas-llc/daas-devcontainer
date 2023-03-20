@@ -69,6 +69,12 @@ curl -sfL https://github.com/Versent/saml2aws/releases/download/v${SAML2AWS_VERS
 sudo chmod u+x ~/.bin/saml2aws
 saml2aws --version
 
+# SAM CLI install
+wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
+unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
+sudo ./sam-installation/install
+sam --version
+
 # AWS Copilot CLI Install
 echo "${INFO} Downloading and installing AWS Copilot CLI"
 curl -Lo copilot https://github.com/aws/copilot-cli/releases/latest/download/copilot-linux && chmod +x copilot && sudo mv copilot /usr/local/bin/copilot && copilot --version

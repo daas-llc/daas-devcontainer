@@ -5,3 +5,4 @@
 target/
 grpc/
 build-*.log
+publish-*.log

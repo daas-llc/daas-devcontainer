@@ -23,7 +23,7 @@ ARG PYTHON_MAJOR_MINOR="3.11"
 # Environment Variables
 ENV HOME="/home/${USER}"
 ENV TF_VERSION="1.4.2"
-ENV TG_VERSION="0.44.4"
+ENV TG_VERSION="0.45.0"
 ENV JAVA_HOME="/usr/lib/jvm/java-${CORRETO_JDK_VERSION}-amazon-corretto"
 ENV GO_PATH="${HOME}/go"
 ENV PATH="${HOME}/.local/bin:${HOME}/go/bin:${HOME}/.bin:${HOME}/.please:${PATH}"
