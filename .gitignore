@@ -6,3 +6,5 @@ target/
 grpc/
 build-*.log
 publish-*.log
+*.env
+.env

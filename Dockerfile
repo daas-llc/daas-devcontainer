@@ -47,6 +47,6 @@ COPY config/install_user_tools.sh install_user_tools.sh
 RUN chmod +x install_user_tools.sh; \
     ./install_user_tools.sh; 
 
-ENV PATH="${NVM_DIR}/versions/node/v${NPM_VERSION}/bin:${PATH}"
+ENV PATH="${NVM_DIR}/versions/node/v${NODE_VERSION}/bin:${PATH}"
 
 WORKDIR ${HOME}
