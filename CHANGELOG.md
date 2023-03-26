@@ -1,5 +1,8 @@
 ## Changelog
 
+### latest
+- latest! Use this tag going forward
+
 ### 1.0.1
 - AWS SAM CLI
 
